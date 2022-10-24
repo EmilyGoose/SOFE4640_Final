@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">SOFE4640 Final</string>
+    <string name="placeholder">Placeholder</string>
+    <string name="hint_name">Name</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password (big secret)</string>
+    <string name="prompt_submit">Submit</string>
+
+    <string name="title_login">Log In</string>
+    <string name="title_register">Register</string>
+
+    <string name="prompt_switch_login">Switch to Login</string>
+    <string name="prompt_switch_register">Switch to Register</string>
 </resources>

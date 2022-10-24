@@ -1,0 +1,72 @@
+package com.emilygoose.sofe4640final
+
+import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+
+class LoginRegisterActivity : AppCompatActivity() {
+
+    // Declare vars for views we'll need
+    private lateinit var formTitle: TextView
+    private lateinit var nameField: EditText
+    private lateinit var emailField: EditText
+    private lateinit var passwordField: EditText
+    private lateinit var loginButton: Button
+    private lateinit var modeButton: Button
+
+    // Boolean tracking whether form is in register or login mode
+    private var registerMode = false
+
+    // Firebase auth
+    private lateinit var auth: FirebaseAuth
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_login_register)
+
+        // Initialize Firebase auth
+        auth = Firebase.auth
+        // Make sure existing session is kill
+        auth.signOut()
+
+        // Grab all views by ID
+        formTitle = findViewById(R.id.loginTitle)
+        nameField = findViewById(R.id.fieldName)
+        emailField = findViewById(R.id.fieldEmail)
+        passwordField = findViewById(R.id.fieldPassword)
+        loginButton = findViewById(R.id.loginButton)
+        modeButton = findViewById(R.id.buttonModeSwitch)
+
+        // Set form for current mode
+        updateForm()
+
+        // Set listener for login/register switch button
+        modeButton.setOnClickListener {
+            registerMode = !registerMode
+            updateForm()
+        }
+
+        loginButton.setOnClickListener {
+
+        }
+    }
+
+    fun updateForm() {
+        if (registerMode) {
+            formTitle.setText(R.string.title_register)
+            modeButton.setText(R.string.prompt_switch_login)
+            nameField.isVisible = true
+        } else {
+            formTitle.setText(R.string.title_login)
+            // Hide name field when logging in we already have it in user data
+            nameField.isVisible = false
+            modeButton.setText(R.string.prompt_switch_register)
+        }
+    }
+}
