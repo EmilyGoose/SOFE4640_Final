@@ -1,9 +1,12 @@
 package com.emilygoose.sofe4640final
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
@@ -53,11 +56,50 @@ class LoginRegisterActivity : AppCompatActivity() {
         }
 
         loginButton.setOnClickListener {
+            val email = emailField.text.toString()
+            val password = passwordField.text.toString()
 
+            if (registerMode) {
+                // Create new user
+                auth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d("Auth", "createUserWithEmail:success")
+                            // TODO save user's name to RTDB
+                            // Send user to MainActivity after success
+                            startActivity(Intent(this, MainActivity::class.java))
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w("Auth", "createUserWithEmail:failure", task.exception)
+                            Toast.makeText(
+                                baseContext, "Authentication failed.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+            } else {
+                auth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this) { task ->
+                        if (task.isSuccessful) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d("Auth", "signInWithEmail:success")
+                            // Send user to MainActivity after success
+                            startActivity(Intent(this, MainActivity::class.java))
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w("Auth", "signInWithEmail:failure", task.exception)
+                            Toast.makeText(
+                                baseContext, "Authentication failed.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+            }
         }
     }
 
-    fun updateForm() {
+    private fun updateForm() {
         if (registerMode) {
             formTitle.setText(R.string.title_register)
             modeButton.setText(R.string.prompt_switch_login)
