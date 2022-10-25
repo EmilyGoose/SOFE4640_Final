@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 class LoginRegisterActivity : AppCompatActivity() {
@@ -26,8 +28,9 @@ class LoginRegisterActivity : AppCompatActivity() {
     // Boolean tracking whether form is in register or login mode
     private var registerMode = false
 
-    // Firebase auth
+    // Firebase auth and db
     private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +40,9 @@ class LoginRegisterActivity : AppCompatActivity() {
         auth = Firebase.auth
         // Make sure existing session is kill
         auth.signOut()
+
+        // Initialize Firestore db
+        db = Firebase.firestore
 
         // Grab all views by ID
         formTitle = findViewById(R.id.loginTitle)
@@ -66,7 +72,22 @@ class LoginRegisterActivity : AppCompatActivity() {
                         if (task.isSuccessful) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("Auth", "createUserWithEmail:success")
-                            // TODO save user's name to RTDB
+                            // Write user name to db
+                            val name = nameField.text.toString()
+                            val userData = hashMapOf(
+                                "name" to name
+                            )
+                            db.collection("users").document(auth.currentUser!!.uid)
+                                .set(userData)
+                                .addOnSuccessListener {
+                                    Log.d(
+                                        "New User",
+                                        "New user created in db"
+                                    )
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.w("New User", "Error adding document", e)
+                                }
                             // Send user to MainActivity after success
                             startActivity(Intent(this, MainActivity::class.java))
                         } else {
