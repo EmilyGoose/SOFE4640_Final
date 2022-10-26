@@ -63,6 +63,11 @@ dependencies {
 
     // Square OkHttp
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
+
+    // Square Picasso for images
+    implementation "com.squareup.picasso:picasso:2.71828"
+
+    // Play Services location for user location
     implementation 'com.google.android.gms:play-services-location:21.0.0'
 
     // Test dependencies

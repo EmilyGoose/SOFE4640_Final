@@ -1,6 +1,7 @@
 package com.emilygoose.sofe4640final
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
@@ -8,6 +9,9 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.emilygoose.sofe4640final.adapter.VenueListAdapter
 import com.emilygoose.sofe4640final.data.Venue
 import com.emilygoose.sofe4640final.util.Ticketmaster
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -28,11 +32,24 @@ class MainActivity : AppCompatActivity() {
     private val ticketmaster = Ticketmaster()
 
     // List of venues
-    private var venueList = ArrayList<Venue>()
+    private val venueList = ArrayList<Venue>()
+
+    // Declare view variables
+    private lateinit var nearbyVenueRecyclerView: RecyclerView
+    private lateinit var nearbyVenueAdapter: VenueListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // Grab view variables
+        nearbyVenueRecyclerView = findViewById(R.id.recycler_nearby)
+
+        // Configure nearby venue RecyclerView
+        nearbyVenueAdapter = VenueListAdapter(venueList)
+        nearbyVenueRecyclerView.adapter = nearbyVenueAdapter
+        nearbyVenueRecyclerView.layoutManager =
+            LinearLayoutManager(this)
 
         // Initialize Firebase auth
         auth = Firebase.auth
@@ -77,7 +94,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun venueListCallback(newVenues: ArrayList<Venue>) {
-        venueList = newVenues
-        Log.d("VenueListCallback", "Got ${venueList.size} venues")
+        // Run on UI thread so we can touch the adapter
+        runOnUiThread {
+            venueList.clear()
+            venueList.addAll(newVenues)
+            Log.d("VenueListCallback", "Got ${venueList.size} venues")
+            Log.d("VenueListCallback", "Adapter has ${nearbyVenueAdapter.itemCount} items")
+            // Todo less expensive call maybe
+            nearbyVenueAdapter.notifyDataSetChanged()
+        }
     }
 }

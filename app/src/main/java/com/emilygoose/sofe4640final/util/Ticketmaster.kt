@@ -40,7 +40,7 @@ class Ticketmaster {
         // Build query URL
         val urlBuilder = StringBuilder(baseUrl)
         // Specify API endpoint
-        urlBuilder.append("/venues")
+        urlBuilder.append("venues")
         // Add API key to authenticate
         urlBuilder.append("?apikey=$apiKey")
         // Append query parameters
