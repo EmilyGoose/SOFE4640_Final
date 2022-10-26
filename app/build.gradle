@@ -4,6 +4,10 @@ plugins {
     id 'com.google.gms.google-services'
 }
 
+def apikeyPropertiesFile = rootProject.file("apikey.properties")
+def apikeyProperties = new Properties()
+apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
+
 android {
     namespace 'com.emilygoose.sofe4640final'
     compileSdk 33
@@ -14,6 +18,8 @@ android {
         targetSdk 33
         versionCode 1
         versionName "1.0"
+
+        buildConfigField("String", "TICKETMASTER_API_KEY", apikeyProperties['TICKETMASTER_API_KEY'])
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -47,6 +53,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth-ktx'
     // Cloud Firestore
     implementation 'com.google.firebase:firebase-firestore-ktx'
+
+    // Square OkHttp
+    implementation("com.squareup.okhttp3:okhttp:4.10.0")
 
     // Test dependencies
     testImplementation 'junit:junit:4.13.2'
