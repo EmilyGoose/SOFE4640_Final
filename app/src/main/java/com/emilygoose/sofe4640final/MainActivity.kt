@@ -1,7 +1,6 @@
 package com.emilygoose.sofe4640final
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
@@ -100,8 +99,7 @@ class MainActivity : AppCompatActivity() {
             venueList.addAll(newVenues)
             Log.d("VenueListCallback", "Got ${venueList.size} venues")
             Log.d("VenueListCallback", "Adapter has ${nearbyVenueAdapter.itemCount} items")
-            // Todo less expensive call maybe
-            nearbyVenueAdapter.notifyDataSetChanged()
+            nearbyVenueAdapter.notifyItemRangeChanged(0, venueList.size)
         }
     }
 }
