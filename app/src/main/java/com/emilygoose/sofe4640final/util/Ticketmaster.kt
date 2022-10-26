@@ -27,7 +27,7 @@ class Ticketmaster {
         isLenient = true
     }
 
-    // Get nearby venues - TODO return something lol
+    // Get nearby venues
     fun getNearbyVenues(location: Location, callback: (ArrayList<Venue>) -> Unit) {
         // Get GeoHash for the location and truncate to 9 chars
         // Ticketmaster API wants max 9

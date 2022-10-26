@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         nearbyVenueAdapter = VenueListAdapter(venueList)
         nearbyVenueRecyclerView.adapter = nearbyVenueAdapter
         nearbyVenueRecyclerView.layoutManager =
-            LinearLayoutManager(this)
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true)
 
         // Initialize Firebase auth
         auth = Firebase.auth

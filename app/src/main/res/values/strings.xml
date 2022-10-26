@@ -12,4 +12,5 @@
     <string name="prompt_switch_login">Switch to Login</string>
     <string name="prompt_switch_register">Switch to Register</string>
     <string name="description_venue_image">Venue Image</string>
+    <string name="label_nearby">Nearby</string>
 </resources>
