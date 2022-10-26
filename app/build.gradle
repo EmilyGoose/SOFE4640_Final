@@ -54,8 +54,12 @@ dependencies {
     // Cloud Firestore
     implementation 'com.google.firebase:firebase-firestore-ktx'
 
+    // GeoFire for venue GeoHash
+    implementation 'com.firebase:geofire-android-common:3.1.0'
+
     // Square OkHttp
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
+    implementation 'com.google.android.gms:play-services-location:21.0.0'
 
     // Test dependencies
     testImplementation 'junit:junit:4.13.2'
