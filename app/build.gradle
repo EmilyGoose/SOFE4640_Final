@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'com.google.gms.google-services'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.7.20'
 }
 
 def apikeyPropertiesFile = rootProject.file("apikey.properties")
@@ -46,6 +47,9 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'com.google.android.material:material:1.7.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+
+    // Kotlin Serialization - For data classes
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.0"
 
     // Firebase BOM
     implementation platform('com.google.firebase:firebase-bom:31.0.1')
