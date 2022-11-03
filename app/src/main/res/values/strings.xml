@@ -12,5 +12,7 @@
     <string name="prompt_switch_login">Switch to Login</string>
     <string name="prompt_switch_register">Switch to Register</string>
     <string name="description_venue_image">Venue Image</string>
-    <string name="label_nearby">Nearby</string>
+    <string name="label_follow">Venues You Follow</string>
+    <string name="label_popular">Popular Venues</string>
+    <string name="label_weekend">This Weekend</string>
 </resources>

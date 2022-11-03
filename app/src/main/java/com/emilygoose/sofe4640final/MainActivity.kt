@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         // Grab view variables
-        nearbyVenueRecyclerView = findViewById(R.id.recycler_nearby)
+        nearbyVenueRecyclerView = findViewById(R.id.recycler_follow)
 
         // Configure nearby venue RecyclerView
         nearbyVenueAdapter = VenueListAdapter(venueList)
