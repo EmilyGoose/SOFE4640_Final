@@ -52,8 +52,6 @@ class Ticketmaster {
         // Build and call HTTP request
         val request = Request.Builder().url(urlBuilder.toString()).build()
 
-        Log.d("Request:", request.toString())
-
         Log.d("VenueSearch", "Performing HTTP request")
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
@@ -86,5 +84,37 @@ class Ticketmaster {
 
     }
 
+    fun getVenueDetails(venueID: String, callback: (Venue) -> Unit) {
+        // Build query URL
+        val urlBuilder = StringBuilder(baseUrl)
+        // Specify API endpoint
+        urlBuilder.append("venues")
+        // Add venue ID
+        urlBuilder.append("/$venueID")
+        // Add API key to authenticate
+        urlBuilder.append("?apikey=$apiKey")
 
+        // Build and call HTTP request
+        val request = Request.Builder().url(urlBuilder.toString()).build()
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                Log.e("VenueSearch", "Request failed. Reason " + e.message)
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                response.body?.let { body ->
+                    val responseJSON = JSONObject(body.string())
+                    // Return empty if nothing occurs
+                    if (responseJSON.has("errors")) {
+                        Log.e("GetVenueDetail", responseJSON.get("errors").toString())
+                        return
+                    }
+
+                    // Bind response to data class and call back
+                    val venue = json.decodeFromString(Venue.serializer(), responseJSON.toString())
+                    callback(venue)
+                }
+            }
+        })
+    }
 }
