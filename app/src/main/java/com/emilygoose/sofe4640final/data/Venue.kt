@@ -7,5 +7,6 @@ data class Venue(
     val name: String,
     val id: String,
     val distance: Float? = null,
+    val address: Address? = null,
     val images: List<Image> = ArrayList()
 )
