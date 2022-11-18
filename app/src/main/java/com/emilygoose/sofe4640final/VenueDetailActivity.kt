@@ -1,12 +1,15 @@
 package com.emilygoose.sofe4640final
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import com.emilygoose.sofe4640final.data.Event
 import com.emilygoose.sofe4640final.data.Venue
 import com.emilygoose.sofe4640final.util.Ticketmaster
+import com.squareup.picasso.Picasso
 
 class VenueDetailActivity : AppCompatActivity() {
 
@@ -15,6 +18,7 @@ class VenueDetailActivity : AppCompatActivity() {
     // Declare views
     private lateinit var venueNameView: TextView
     private lateinit var venueAddressView: TextView
+    private lateinit var venueImageView: ImageView
 
     // Ticketmaster API helper
     private val ticketmaster = Ticketmaster()
@@ -37,11 +41,16 @@ class VenueDetailActivity : AppCompatActivity() {
         // Initialize views
         venueNameView = findViewById(R.id.label_venue_name)
         venueAddressView = findViewById(R.id.label_venue_address)
+        venueImageView = findViewById(R.id.image_venue_detail)
 
         Log.d("VenueDetail", "Getting detail for venue $venueID")
 
         // Get venue details
         ticketmaster.getVenueDetails(venueID, ::populateVenueFields)
+
+        // Get list of upcoming events
+        ticketmaster.getEventsByVenueId(venueID, ::populateEventList)
+
     }
 
     private fun populateVenueFields(venue: Venue) {
@@ -52,6 +61,17 @@ class VenueDetailActivity : AppCompatActivity() {
             // Populate text fields
             venueNameView.text = venue.name
             venueAddressView.text = "${venue.address?.line1}"
+
+            // Insert venue image
+            if (venue.images.isNotEmpty()) {
+                Picasso.get().load(venue.images[0].url).into(venueImageView)
+            }
+        }
+    }
+
+    private fun populateEventList(eventList: List<Event>) {
+        for (event in eventList) {
+            Log.d("PopulateEventList", event.name)
         }
     }
 }

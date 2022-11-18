@@ -4,6 +4,7 @@ import android.location.Location
 import android.util.Log
 import com.emilygoose.sofe4640final.BuildConfig
 import com.emilygoose.sofe4640final.data.Venue
+import com.emilygoose.sofe4640final.data.Event
 import com.firebase.geofire.GeoFireUtils
 import com.firebase.geofire.GeoLocation
 import kotlinx.serialization.json.Json
@@ -113,6 +114,57 @@ class Ticketmaster {
                     // Bind response to data class and call back
                     val venue = json.decodeFromString(Venue.serializer(), responseJSON.toString())
                     callback(venue)
+                }
+            }
+        })
+    }
+
+    fun getEventsByVenueId(
+        venueID: String,
+        callback: (ArrayList<Event>) -> Unit
+    ) {
+        // Build query URL
+        val urlBuilder = StringBuilder(baseUrl)
+        // Specify API endpoint
+        urlBuilder.append("events")
+        // Add API key to authenticate
+        urlBuilder.append("?apikey=$apiKey")
+        // Append query parameters
+        urlBuilder
+            .append("&venueId=$venueID")
+
+        // Build and call HTTP request
+        val request = Request.Builder().url(urlBuilder.toString()).build()
+
+        Log.d("EventSearch", "Performing HTTP request")
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                Log.e("VenueSearch", "Request failed. Reason " + e.message)
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                response.body?.let { body ->
+                    val responseJSON = JSONObject(body.string())
+                    // Return if error occurs
+                    if (responseJSON.has("errors")) {
+                        Log.e("EventSearch", responseJSON.get("errors").toString())
+                        return
+                    }
+
+                    // Get list of events and bind to data classes
+                    val events = responseJSON.getJSONObject("_embedded").getJSONArray("events")
+                    val eventList = ArrayList<Event>()
+                    for (i in 0 until events.length()) {
+                        val eventJSON = events.get(i)
+                        Log.d("EventSearch", eventJSON.toString())
+                        // Bind JSON to Event data class and add to list
+                        val venue = json.decodeFromString(
+                            Event.serializer(),
+                            eventJSON.toString()
+                        )
+                        eventList.add(venue)
+                    }
+                    callback(eventList)
                 }
             }
         })
