@@ -9,11 +9,15 @@ import androidx.appcompat.app.AppCompatActivity
 import com.emilygoose.sofe4640final.data.Event
 import com.emilygoose.sofe4640final.data.Venue
 import com.emilygoose.sofe4640final.util.Ticketmaster
+import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
 
 class VenueDetailActivity : AppCompatActivity() {
 
     private lateinit var venueID: String
+
+    // Firebase auth
+    private lateinit var auth: FirebaseAuth
 
     // Declare views
     private lateinit var venueNameView: TextView
@@ -51,6 +55,15 @@ class VenueDetailActivity : AppCompatActivity() {
         // Get list of upcoming events
         ticketmaster.getEventsByVenueId(venueID, ::populateEventList)
 
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        // Kick out unauthed users to login screen
+        if (auth.currentUser == null) {
+            startActivity(Intent(this, LoginRegisterActivity::class.java))
+        }
     }
 
     private fun populateVenueFields(venue: Venue) {
