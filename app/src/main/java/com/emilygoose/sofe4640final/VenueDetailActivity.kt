@@ -6,10 +6,15 @@ import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.emilygoose.sofe4640final.adapter.EventListAdapter
 import com.emilygoose.sofe4640final.data.Event
 import com.emilygoose.sofe4640final.data.Venue
 import com.emilygoose.sofe4640final.util.Ticketmaster
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
 
 class VenueDetailActivity : AppCompatActivity() {
@@ -19,13 +24,18 @@ class VenueDetailActivity : AppCompatActivity() {
     // Firebase auth
     private lateinit var auth: FirebaseAuth
 
+    // Ticketmaster API helper
+    private val ticketmaster = Ticketmaster()
+
+    // List of events
+    private val eventList = ArrayList<Event>()
+
     // Declare views
     private lateinit var venueNameView: TextView
     private lateinit var venueAddressView: TextView
     private lateinit var venueImageView: ImageView
-
-    // Ticketmaster API helper
-    private val ticketmaster = Ticketmaster()
+    private lateinit var eventRecyclerView: RecyclerView
+    private lateinit var eventAdapter: EventListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,10 +52,21 @@ class VenueDetailActivity : AppCompatActivity() {
 
         venueID = intentExtra
 
+
+        // Initialize Firebase auth
+        auth = Firebase.auth
+
         // Initialize views
         venueNameView = findViewById(R.id.label_venue_name)
         venueAddressView = findViewById(R.id.label_venue_address)
         venueImageView = findViewById(R.id.image_venue_detail)
+        eventRecyclerView = findViewById(R.id.recycler_upcoming)
+
+        // Configure RecyclerView for events
+        eventAdapter = EventListAdapter(eventList)
+        eventRecyclerView.adapter = eventAdapter
+        eventRecyclerView.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         Log.d("VenueDetail", "Getting detail for venue $venueID")
 
@@ -82,9 +103,14 @@ class VenueDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun populateEventList(eventList: List<Event>) {
-        for (event in eventList) {
-            Log.d("PopulateEventList", event.name)
+    private fun populateEventList(newEvents: ArrayList<Event>) {
+        // Run on UI thread so we can touch the adapter
+        runOnUiThread {
+            eventList.clear()
+            eventList.addAll(newEvents)
+            Log.d("EventListCallback", "Got ${eventList.size} venues")
+            Log.d("EventListCallback", "Adapter has ${eventAdapter.itemCount} items")
+            eventAdapter.notifyItemRangeChanged(0, eventList.size)
         }
     }
 }

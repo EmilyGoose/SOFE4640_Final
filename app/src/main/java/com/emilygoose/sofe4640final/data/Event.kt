@@ -17,8 +17,8 @@ data class Event(
     ) {
         @Serializable
         data class StartDate(
-            val localDate: String,
-            val dateTime: String
+            val localDate: String = "",
+            val dateTime: String = ""
         )
     }
 }
