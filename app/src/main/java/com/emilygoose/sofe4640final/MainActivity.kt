@@ -11,20 +11,25 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.emilygoose.sofe4640final.adapter.UpcomingEventAdapter
 import com.emilygoose.sofe4640final.adapter.VenueListAdapter
+import com.emilygoose.sofe4640final.data.Event
 import com.emilygoose.sofe4640final.data.Venue
 import com.emilygoose.sofe4640final.util.Ticketmaster
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
-    // Firebase auth
+    // Firebase auth and db
     private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
 
     // Location services client
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -35,9 +40,16 @@ class MainActivity : AppCompatActivity() {
     // List of venues
     private val venueList = ArrayList<Venue>()
 
+    // List of events
+    private val eventList = ArrayList<Event>()
+
     // Declare view variables
     private lateinit var nearbyVenueRecyclerView: RecyclerView
+    private lateinit var upcomingEventRecyclerView: RecyclerView
+
+    // Adapters for RecyclerViews
     private lateinit var nearbyVenueAdapter: VenueListAdapter
+    private lateinit var upcomingEventAdapter: UpcomingEventAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +57,7 @@ class MainActivity : AppCompatActivity() {
 
         // Grab view variables
         nearbyVenueRecyclerView = findViewById(R.id.recycler_follow)
+        upcomingEventRecyclerView = findViewById(R.id.recycler_homepage_upcoming)
 
         // Configure nearby venue RecyclerView
         nearbyVenueAdapter = VenueListAdapter(venueList)
@@ -52,8 +65,15 @@ class MainActivity : AppCompatActivity() {
         nearbyVenueRecyclerView.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true)
 
+        // Configure upcoming event RecyclerView
+        upcomingEventAdapter = UpcomingEventAdapter(eventList)
+        upcomingEventRecyclerView.adapter = upcomingEventAdapter
+        upcomingEventRecyclerView.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true)
+
         // Initialize Firebase auth
         auth = Firebase.auth
+        db = Firebase.firestore
 
         // Initiate the fusedLocationClient
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
@@ -85,6 +105,19 @@ class MainActivity : AppCompatActivity() {
                     ticketmaster.getNearbyVenues(location ?: Location(null), ::venueListCallback)
                 }
             }
+
+        // Get user's following venues and get events for them
+        // Check if user is following venue and display follow button accordingly
+        db.collection("users").document(auth.currentUser!!.uid)
+            .get().addOnSuccessListener { document ->
+                val followList = document.get("following") as List<*>
+                for (venueID in followList) {
+                    lifecycleScope.launch {
+                        ticketmaster.getEventsByVenueId(venueID as String, ::upcomingEventCallback)
+                    }
+                }
+            }
+
     }
 
     override fun onStart() {
@@ -104,6 +137,15 @@ class MainActivity : AppCompatActivity() {
             Log.d("VenueListCallback", "Got ${venueList.size} venues")
             Log.d("VenueListCallback", "Adapter has ${nearbyVenueAdapter.itemCount} items")
             nearbyVenueAdapter.notifyItemRangeChanged(0, venueList.size)
+        }
+    }
+
+    private fun upcomingEventCallback(newEvents: ArrayList<Event>) {
+        // Run on UI thread so we can touch the adapter
+        runOnUiThread {
+            val prevSize = eventList.size
+            eventList.addAll(newEvents)
+            upcomingEventAdapter.notifyItemRangeChanged(prevSize, eventList.size)
         }
     }
 }

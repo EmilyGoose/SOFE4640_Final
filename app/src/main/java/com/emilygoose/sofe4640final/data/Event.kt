@@ -7,6 +7,7 @@ data class Event(
     val type: String,
     val name: String,
     val dates: Dates,
+    val place: Place? = null,
     val description: String = "",
     val images: List<Image> = ArrayList()
 ) {
@@ -21,4 +22,9 @@ data class Event(
             val dateTime: String = ""
         )
     }
+
+    @Serializable
+    data class Place(
+        val name: String = ""
+    )
 }

@@ -112,18 +112,18 @@ class VenueDetailActivity : AppCompatActivity() {
         followButton.setOnClickListener {
             // Check if user is following venue and update collection accordingly
             val document = db.collection("users").document(auth.currentUser!!.uid)
-            if (userFollowing) {
+            userFollowing = if (userFollowing) {
                 // Remove venue from user's following
                 document.update("following", FieldValue.arrayRemove(venueID))
                 // Update button
                 followButton.setText(R.string.prompt_follow)
-                userFollowing = false
+                false
             } else {
                 // Add venue to user's following
                 document.update("following", FieldValue.arrayUnion(venueID))
                 // Update button
                 followButton.setText(R.string.prompt_unfollow)
-                userFollowing = true
+                true
             }
         }
     }
