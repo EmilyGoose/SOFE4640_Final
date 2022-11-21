@@ -61,7 +61,6 @@ class VenueDetailActivity : AppCompatActivity() {
 
         venueID = intentExtra
 
-
         // Initialize Firebase auth
         auth = Firebase.auth
 
@@ -86,10 +85,14 @@ class VenueDetailActivity : AppCompatActivity() {
         lifecycleScope.launch {
             // Get venue details
             ticketmaster.getVenueDetails(venueID, ::populateVenueFields)
-
+        }
+        // These only work in separate calls
+        lifecycleScope.launch {
             // Get list of upcoming events
             ticketmaster.getEventsByVenueId(venueID, ::populateEventList)
         }
+
+        // Check if user is following venue and display follow button accordingly
 
     }
 

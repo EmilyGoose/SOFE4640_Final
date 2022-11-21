@@ -75,7 +75,8 @@ class LoginRegisterActivity : AppCompatActivity() {
                             // Write user name to db
                             val name = nameField.text.toString()
                             val userData = hashMapOf(
-                                "name" to name
+                                "name" to name,
+                                "following" to listOf<String>()
                             )
                             db.collection("users").document(auth.currentUser!!.uid)
                                 .set(userData)
