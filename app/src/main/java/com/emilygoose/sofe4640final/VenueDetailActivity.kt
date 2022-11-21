@@ -16,6 +16,7 @@ import com.emilygoose.sofe4640final.data.Venue
 import com.emilygoose.sofe4640final.util.Ticketmaster
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -35,6 +36,9 @@ class VenueDetailActivity : AppCompatActivity() {
 
     // List of events
     private val eventList = ArrayList<Event>()
+
+    // Is user following venue?
+    private var userFollowing = false
 
     // Declare views
     private lateinit var venueNameView: TextView
@@ -93,7 +97,35 @@ class VenueDetailActivity : AppCompatActivity() {
         }
 
         // Check if user is following venue and display follow button accordingly
+        db.collection("users").document(auth.currentUser!!.uid)
+            .get().addOnSuccessListener { document ->
+                val followList = document.get("following") as List<*>
+                if (venueID in followList) {
+                    userFollowing = true
+                    followButton.setText(R.string.prompt_unfollow)
+                } else {
+                    userFollowing = false
+                    followButton.setText(R.string.prompt_follow)
+                }
+            }
 
+        followButton.setOnClickListener {
+            // Check if user is following venue and update collection accordingly
+            val document = db.collection("users").document(auth.currentUser!!.uid)
+            if (userFollowing) {
+                // Remove venue from user's following
+                document.update("following", FieldValue.arrayRemove(venueID))
+                // Update button
+                followButton.setText(R.string.prompt_follow)
+                userFollowing = false
+            } else {
+                // Add venue to user's following
+                document.update("following", FieldValue.arrayUnion(venueID))
+                // Update button
+                followButton.setText(R.string.prompt_unfollow)
+                userFollowing = true
+            }
+        }
     }
 
     override fun onStart() {
