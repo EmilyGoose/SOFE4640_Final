@@ -71,6 +71,11 @@ class VenueDetailActivity : AppCompatActivity() {
         // Initialize Firestore db
         db = Firebase.firestore
 
+        // Kick out unauthed users to login screen
+        if (auth.currentUser == null) {
+            startActivity(Intent(this, LoginRegisterActivity::class.java))
+        }
+
         // Initialize views
         venueNameView = findViewById(R.id.label_venue_name)
         venueAddressView = findViewById(R.id.label_venue_address)
@@ -130,11 +135,6 @@ class VenueDetailActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-
-        // Kick out unauthed users to login screen
-        if (auth.currentUser == null) {
-            startActivity(Intent(this, LoginRegisterActivity::class.java))
-        }
     }
 
     private fun populateVenueFields(venue: Venue) {

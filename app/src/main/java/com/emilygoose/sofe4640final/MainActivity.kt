@@ -95,6 +95,11 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
+        // Kick out unauthed users to login screen
+        if (auth.currentUser == null) {
+            startActivity(Intent(this, LoginRegisterActivity::class.java))
+        }
+
         // Get the user's last known location and populate the nearby venues list
         fusedLocationClient.lastLocation
             .addOnSuccessListener { location: Location? ->
@@ -108,28 +113,24 @@ class MainActivity : AppCompatActivity() {
 
         // Get user's following venues and get events for them
         // Check if user is following venue and display follow button accordingly
-        if (auth.currentUser != null) { //Super duper basic fix, idk if there's a cleaner way you wanna do this
-            db.collection("users").document(auth.currentUser!!.uid)
-                .get().addOnSuccessListener { document ->
-                    val followList = document.get("following") as List<*>
-                    for (venueID in followList) {
-                        lifecycleScope.launch {
-                            ticketmaster.getEventsByVenueId(venueID as String, ::upcomingEventCallback)
-                        }
+        db.collection("users").document(auth.currentUser!!.uid)
+            .get().addOnSuccessListener { document ->
+                val followList = document.get("following") as List<*>
+                for (venueID in followList) {
+                    lifecycleScope.launch {
+                        ticketmaster.getEventsByVenueId(
+                            venueID as String,
+                            ::upcomingEventCallback
+                        )
                     }
                 }
-        }
+            }
 
 
     }
 
     override fun onStart() {
         super.onStart()
-
-        // Kick out unauthed users to login screen
-        if (auth.currentUser == null) {
-            startActivity(Intent(this, LoginRegisterActivity::class.java))
-        }
     }
 
     private fun venueListCallback(newVenues: ArrayList<Venue>) {
