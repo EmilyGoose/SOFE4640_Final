@@ -108,15 +108,18 @@ class MainActivity : AppCompatActivity() {
 
         // Get user's following venues and get events for them
         // Check if user is following venue and display follow button accordingly
-        db.collection("users").document(auth.currentUser!!.uid)
-            .get().addOnSuccessListener { document ->
-                val followList = document.get("following") as List<*>
-                for (venueID in followList) {
-                    lifecycleScope.launch {
-                        ticketmaster.getEventsByVenueId(venueID as String, ::upcomingEventCallback)
+        if (auth.currentUser != null) { //Super duper basic fix, idk if there's a cleaner way you wanna do this
+            db.collection("users").document(auth.currentUser!!.uid)
+                .get().addOnSuccessListener { document ->
+                    val followList = document.get("following") as List<*>
+                    for (venueID in followList) {
+                        lifecycleScope.launch {
+                            ticketmaster.getEventsByVenueId(venueID as String, ::upcomingEventCallback)
+                        }
                     }
                 }
-            }
+        }
+
 
     }
 
