@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.emilygoose.sofe4640final.adapter.VenueListAdapter
@@ -18,6 +19,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -79,7 +81,9 @@ class MainActivity : AppCompatActivity() {
                 Log.d("Location", "Got user's location, calling Ticketmaster API")
                 // Get nearby venues - In rare cases location is null so send user to null island
                 // Pass it the callback function to populate venueList
-                ticketmaster.getNearbyVenues(location ?: Location(null), ::venueListCallback)
+                lifecycleScope.launch {
+                    ticketmaster.getNearbyVenues(location ?: Location(null), ::venueListCallback)
+                }
             }
     }
 

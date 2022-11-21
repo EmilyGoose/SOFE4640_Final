@@ -3,9 +3,11 @@ package com.emilygoose.sofe4640final
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.emilygoose.sofe4640final.adapter.EventListAdapter
@@ -14,15 +16,19 @@ import com.emilygoose.sofe4640final.data.Venue
 import com.emilygoose.sofe4640final.util.Ticketmaster
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.launch
 
 class VenueDetailActivity : AppCompatActivity() {
 
     private lateinit var venueID: String
 
-    // Firebase auth
+    // Firebase auth and db
     private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
 
     // Ticketmaster API helper
     private val ticketmaster = Ticketmaster()
@@ -35,6 +41,9 @@ class VenueDetailActivity : AppCompatActivity() {
     private lateinit var venueAddressView: TextView
     private lateinit var venueImageView: ImageView
     private lateinit var eventRecyclerView: RecyclerView
+    private lateinit var followButton: Button
+
+    // Adapter for event list RecyclerView
     private lateinit var eventAdapter: EventListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,11 +65,15 @@ class VenueDetailActivity : AppCompatActivity() {
         // Initialize Firebase auth
         auth = Firebase.auth
 
+        // Initialize Firestore db
+        db = Firebase.firestore
+
         // Initialize views
         venueNameView = findViewById(R.id.label_venue_name)
         venueAddressView = findViewById(R.id.label_venue_address)
         venueImageView = findViewById(R.id.image_venue_detail)
         eventRecyclerView = findViewById(R.id.recycler_upcoming)
+        followButton = findViewById(R.id.button_follow)
 
         // Configure RecyclerView for events
         eventAdapter = EventListAdapter(eventList)
@@ -70,11 +83,13 @@ class VenueDetailActivity : AppCompatActivity() {
 
         Log.d("VenueDetail", "Getting detail for venue $venueID")
 
-        // Get venue details
-        ticketmaster.getVenueDetails(venueID, ::populateVenueFields)
+        lifecycleScope.launch {
+            // Get venue details
+            ticketmaster.getVenueDetails(venueID, ::populateVenueFields)
 
-        // Get list of upcoming events
-        ticketmaster.getEventsByVenueId(venueID, ::populateEventList)
+            // Get list of upcoming events
+            ticketmaster.getEventsByVenueId(venueID, ::populateEventList)
+        }
 
     }
 
