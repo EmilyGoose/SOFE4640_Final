@@ -14,6 +14,7 @@ import com.emilygoose.sofe4640final.adapter.EventListAdapter
 import com.emilygoose.sofe4640final.data.Event
 import com.emilygoose.sofe4640final.data.Venue
 import com.emilygoose.sofe4640final.util.Ticketmaster
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldValue
@@ -46,6 +47,7 @@ class VenueDetailActivity : AppCompatActivity() {
     private lateinit var venueImageView: ImageView
     private lateinit var eventRecyclerView: RecyclerView
     private lateinit var followButton: Button
+    private lateinit var appBar: MaterialToolbar
 
     // Adapter for event list RecyclerView
     private lateinit var eventAdapter: EventListAdapter
@@ -82,6 +84,7 @@ class VenueDetailActivity : AppCompatActivity() {
         venueImageView = findViewById(R.id.image_venue_detail)
         eventRecyclerView = findViewById(R.id.recycler_upcoming)
         followButton = findViewById(R.id.button_follow)
+        appBar = findViewById(R.id.topAppBar)
 
         // Configure RecyclerView for events
         eventAdapter = EventListAdapter(eventList)
@@ -130,6 +133,10 @@ class VenueDetailActivity : AppCompatActivity() {
                 followButton.setText(R.string.prompt_unfollow)
                 true
             }
+        }
+
+        appBar.setNavigationOnClickListener {
+            startActivity(Intent(this, MainActivity::class.java))
         }
     }
 

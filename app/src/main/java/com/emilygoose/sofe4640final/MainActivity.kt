@@ -18,6 +18,7 @@ import com.emilygoose.sofe4640final.data.Venue
 import com.emilygoose.sofe4640final.util.Ticketmaster
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -46,6 +47,7 @@ class MainActivity : AppCompatActivity() {
     // Declare view variables
     private lateinit var nearbyVenueRecyclerView: RecyclerView
     private lateinit var upcomingEventRecyclerView: RecyclerView
+    private lateinit var appBar: MaterialToolbar
 
     // Adapters for RecyclerViews
     private lateinit var nearbyVenueAdapter: VenueListAdapter
@@ -58,6 +60,7 @@ class MainActivity : AppCompatActivity() {
         // Grab view variables
         nearbyVenueRecyclerView = findViewById(R.id.recycler_follow)
         upcomingEventRecyclerView = findViewById(R.id.recycler_homepage_upcoming)
+        appBar = findViewById(R.id.topAppBar)
 
         // Configure nearby venue RecyclerView
         nearbyVenueAdapter = VenueListAdapter(venueList)
@@ -126,7 +129,9 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-
+        appBar.setNavigationOnClickListener {
+            Log.d("Nav click", "Doesn't do anything on this screen :)")
+        }
     }
 
     override fun onStart() {

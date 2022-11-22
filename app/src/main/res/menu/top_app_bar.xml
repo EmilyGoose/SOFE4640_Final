@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/locationTag"
+        android:contentDescription="@string/user_location"
+        android:title="@string/placeholder"
+        app:showAsAction="ifRoom" />
+
+</menu>
