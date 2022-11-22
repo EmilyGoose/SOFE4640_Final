@@ -18,4 +18,5 @@
     <string name="label_distance">%.2f km</string>
     <string name="prompt_follow">Follow</string>
     <string name="prompt_unfollow">Unfollow</string>
+    <string name="user_location">User location</string>
 </resources>
