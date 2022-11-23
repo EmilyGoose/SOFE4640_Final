@@ -8,5 +8,11 @@ data class Venue(
     val id: String,
     val distance: Float? = null,
     val address: Address? = null,
-    val images: List<Image> = ArrayList()
-)
+    val images: List<Image> = ArrayList(),
+    val upcomingEvents: UpcomingEvents
+) {
+    @Serializable
+    data class UpcomingEvents(
+        val _total: Int
+    )
+}
