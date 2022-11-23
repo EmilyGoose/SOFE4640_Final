@@ -86,16 +86,6 @@ class MainActivity : AppCompatActivity() {
         // Initiate the fusedLocationClient
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-
-        appBar.setNavigationOnClickListener {
-            Log.d("Nav click", "Doesn't do anything on this screen :)")
-        }
-    }
-
-    // Populate venue and event list onResume so it updates when we back in
-    override fun onResume() {
-        super.onResume()
-
         // Check that we have location permissions, if not then ask the user
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -124,10 +114,18 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
+        appBar.setNavigationOnClickListener {
+            Log.d("Nav click", "Doesn't do anything on this screen :)")
+        }
+    }
+
+    // Populate venue and event list onResume so it updates when we back in
+    override fun onResume() {
+        super.onResume()
+
         eventList.clear()
 
         // Get user's following venues and get events for them
-        // Check if user is following venue and display follow button accordingly
         db.collection("users").document(auth.currentUser!!.uid)
             .get().addOnSuccessListener { document ->
                 val followList = document.get("following") as List<*>
@@ -147,9 +145,8 @@ class MainActivity : AppCompatActivity() {
         // Run on UI thread so we can touch the adapter
         runOnUiThread {
             venueList.clear()
+            // Add new venues and update the adapter
             venueList.addAll(newVenues.reversed())
-            Log.d("VenueListCallback", "Got ${venueList.size} venues")
-            Log.d("VenueListCallback", "Adapter has ${nearbyVenueAdapter.itemCount} items")
             nearbyVenueAdapter.notifyItemRangeChanged(0, venueList.size)
         }
     }

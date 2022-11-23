@@ -85,7 +85,7 @@ class Ticketmaster {
                             val venue =
                                 json.decodeFromString(Venue.serializer(), venueJSON.toString())
                             // Check if venue has upcoming events and add to list
-                            if (venue.upcomingEvents._total > 0) {
+                            if (venue.upcomingEvents == null || venue.upcomingEvents._total > 0) {
                                 venueList.add(venue)
                             }
                         }

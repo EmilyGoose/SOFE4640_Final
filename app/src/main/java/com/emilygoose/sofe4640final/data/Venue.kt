@@ -4,12 +4,12 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Venue(
-    val name: String,
-    val id: String,
+    val name: String = "Error getting venue name",
+    val id: String = "Error getting venue ID",
     val distance: Float? = null,
     val address: Address? = null,
     val images: List<Image> = ArrayList(),
-    val upcomingEvents: UpcomingEvents
+    val upcomingEvents: UpcomingEvents? = null
 ) {
     @Serializable
     data class UpcomingEvents(
