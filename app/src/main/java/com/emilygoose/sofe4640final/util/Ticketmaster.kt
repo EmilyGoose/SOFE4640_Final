@@ -81,7 +81,6 @@ class Ticketmaster {
                         val venueList = ArrayList<Venue>()
                         for (i in 0 until venues.length()) {
                             val venueJSON = venues.get(i)
-                            Log.d("VenueSearch", venueJSON.toString())
                             // Bind JSON to Venue data class and add to list
                             val venue =
                                 json.decodeFromString(Venue.serializer(), venueJSON.toString())
@@ -179,7 +178,6 @@ class Ticketmaster {
                         val eventList = ArrayList<Event>()
                         for (i in 0 until events.length()) {
                             val eventJSON = events.get(i)
-                            Log.d("EventSearch", eventJSON.toString())
                             // Bind JSON to Event data class and add to list
                             val venue = json.decodeFromString(
                                 Event.serializer(),
