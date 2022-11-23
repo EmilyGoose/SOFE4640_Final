@@ -140,10 +140,6 @@ class VenueDetailActivity : AppCompatActivity() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-    }
-
     private fun populateVenueFields(venue: Venue) {
         Log.d("PopulateVenueDetail", venue.toString())
 

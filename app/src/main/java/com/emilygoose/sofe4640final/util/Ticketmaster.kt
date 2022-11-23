@@ -166,6 +166,11 @@ class Ticketmaster {
                             return
                         }
 
+                        // Make sure results actually returned
+                        if (!responseJSON.has("_embedded")) {
+                            return
+                        }
+
                         // Get list of events and bind to data classes
                         val events = responseJSON.getJSONObject("_embedded").getJSONArray("events")
                         val eventList = ArrayList<Event>()

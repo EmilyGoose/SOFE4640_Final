@@ -34,7 +34,6 @@ class VenueListAdapter(private val dataSet: ArrayList<Venue>) :
 
         // Set title and distance
         holder.venueTitle.text = venue.name
-        // todo grab string resource properly
         holder.venueDistance.text =
             holder.view.context.getString(R.string.label_distance, venue.distance)
 
@@ -43,6 +42,12 @@ class VenueListAdapter(private val dataSet: ArrayList<Venue>) :
         if (venue.images.isNotEmpty()) {
             // Load first venue image into ImageView with Picasso
             Picasso.get().load(venue.images[0].url).resize(250, 250).centerCrop()
+                .into(holder.venueImageView)
+        } else {
+            // Load placeholder image
+            val placeholderUrl =
+                "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=600&q=75"
+            Picasso.get().load(placeholderUrl).resize(250, 250).centerCrop()
                 .into(holder.venueImageView)
         }
 
