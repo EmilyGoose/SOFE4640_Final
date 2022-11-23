@@ -33,7 +33,7 @@ class UpcomingEventAdapter(private val dataSet: ArrayList<Event>) :
 
         // Set Title and Venue name
         holder.venueTitle.text = event.name
-        holder.venueDistance.text = event.place?.name
+        holder.venueDistance.text = event.dates.start.localDate
 
         Log.d("BindImage", "Adding image to card")
         // Make sure images exist

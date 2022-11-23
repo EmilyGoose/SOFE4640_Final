@@ -138,7 +138,7 @@ class MainActivity : AppCompatActivity() {
         // Run on UI thread so we can touch the adapter
         runOnUiThread {
             venueList.clear()
-            venueList.addAll(newVenues)
+            venueList.addAll(newVenues.reversed())
             Log.d("VenueListCallback", "Got ${venueList.size} venues")
             Log.d("VenueListCallback", "Adapter has ${nearbyVenueAdapter.itemCount} items")
             nearbyVenueAdapter.notifyItemRangeChanged(0, venueList.size)
@@ -148,9 +148,12 @@ class MainActivity : AppCompatActivity() {
     private fun upcomingEventCallback(newEvents: ArrayList<Event>) {
         // Run on UI thread so we can touch the adapter
         runOnUiThread {
-            val prevSize = eventList.size
             eventList.addAll(newEvents)
-            upcomingEventAdapter.notifyItemRangeChanged(prevSize, eventList.size)
+            // Sort eventList by dates
+            val sortedEvents = eventList.sortedBy { it.dates.start.localDate }
+            eventList.clear()
+            eventList.addAll(sortedEvents.reversed())
+            upcomingEventAdapter.notifyItemRangeChanged(0, eventList.size)
         }
     }
 }
