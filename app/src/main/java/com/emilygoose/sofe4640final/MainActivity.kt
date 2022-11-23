@@ -78,6 +78,11 @@ class MainActivity : AppCompatActivity() {
         auth = Firebase.auth
         db = Firebase.firestore
 
+        // Kick out unauthed users to login screen
+        if (auth.currentUser == null) {
+            startActivity(Intent(this, LoginRegisterActivity::class.java))
+        }
+
         // Initiate the fusedLocationClient
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
@@ -96,11 +101,6 @@ class MainActivity : AppCompatActivity() {
                 arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION),
                 0
             )
-        }
-
-        // Kick out unauthed users to login screen
-        if (auth.currentUser == null) {
-            startActivity(Intent(this, LoginRegisterActivity::class.java))
         }
 
         // Get the user's last known location and populate the nearby venues list
@@ -132,10 +132,6 @@ class MainActivity : AppCompatActivity() {
         appBar.setNavigationOnClickListener {
             Log.d("Nav click", "Doesn't do anything on this screen :)")
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
     }
 
     private fun venueListCallback(newVenues: ArrayList<Venue>) {
