@@ -15,6 +15,13 @@
         android:theme="@style/Theme.SOFE4640Final"
         tools:targetApi="31">
         <activity
+            android:name=".EventDetailActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".VenueDetailActivity"
             android:exported="false">
             <meta-data
