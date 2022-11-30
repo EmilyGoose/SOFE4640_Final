@@ -114,15 +114,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-        appBar.setNavigationOnClickListener {
-            Log.d("Nav click", "Doesn't do anything on this screen :)")
-        }
-    }
-
-    // Populate venue and event list onResume so it updates when we back in
-    override fun onResume() {
-        super.onResume()
-
         eventList.clear()
 
         // Get user's following venues and get events for them
@@ -139,6 +130,9 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
+        appBar.setNavigationOnClickListener {
+            Log.d("Nav click", "Doesn't do anything on this screen :)")
+        }
     }
 
     private fun venueListCallback(newVenues: ArrayList<Venue>) {
