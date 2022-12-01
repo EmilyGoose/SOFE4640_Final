@@ -42,7 +42,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_follow"
+                android:id="@+id/recycler_nearby"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="8dp"
@@ -52,24 +52,23 @@
                 app:layout_constraintTop_toBottomOf="@id/label_follow" />
 
             <TextView
-                android:id="@+id/label_popular"
+                android:id="@+id/label_following"
                 style="@style/TextAppearance.Material3.TitleMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:text="@string/label_popular"
+                android:text="@string/label_following"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/recycler_follow" />
-
+                app:layout_constraintTop_toBottomOf="@id/recycler_nearby" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_popular"
+                android:id="@+id/recycler_following"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/label_popular" />
+                app:layout_constraintTop_toBottomOf="@id/label_following" />
 
             <TextView
                 android:id="@+id/label_upcoming"
@@ -79,7 +78,7 @@
                 android:layout_margin="8dp"
                 android:text="@string/label_upcoming"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/recycler_popular" />
+                app:layout_constraintTop_toBottomOf="@id/recycler_following" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_homepage_upcoming"

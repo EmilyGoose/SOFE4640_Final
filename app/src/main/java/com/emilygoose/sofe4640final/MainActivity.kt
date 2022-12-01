@@ -39,18 +39,23 @@ class MainActivity : AppCompatActivity() {
     private val ticketmaster = Ticketmaster()
 
     // List of venues
-    private val venueList = ArrayList<Venue>()
+    private val upcomingVenueList = ArrayList<Venue>()
+
+    // List of following venues
+    private val followingVenueList = ArrayList<Venue>()
 
     // List of events
     private val eventList = ArrayList<Event>()
 
     // Declare view variables
     private lateinit var nearbyVenueRecyclerView: RecyclerView
+    private lateinit var followingVenueRecyclerView: RecyclerView
     private lateinit var upcomingEventRecyclerView: RecyclerView
     private lateinit var appBar: MaterialToolbar
 
     // Adapters for RecyclerViews
     private lateinit var nearbyVenueAdapter: VenueListAdapter
+    private lateinit var followingVenueAdapter: VenueListAdapter
     private lateinit var upcomingEventAdapter: UpcomingEventAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,14 +63,21 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         // Grab view variables
-        nearbyVenueRecyclerView = findViewById(R.id.recycler_follow)
+        nearbyVenueRecyclerView = findViewById(R.id.recycler_nearby)
+        followingVenueRecyclerView = findViewById(R.id.recycler_following)
         upcomingEventRecyclerView = findViewById(R.id.recycler_homepage_upcoming)
         appBar = findViewById(R.id.topAppBar)
 
         // Configure nearby venue RecyclerView
-        nearbyVenueAdapter = VenueListAdapter(venueList)
+        nearbyVenueAdapter = VenueListAdapter(upcomingVenueList, true)
         nearbyVenueRecyclerView.adapter = nearbyVenueAdapter
         nearbyVenueRecyclerView.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true)
+
+        // Configure following venue RecyclerView
+        followingVenueAdapter = VenueListAdapter(followingVenueList, false)
+        followingVenueRecyclerView.adapter = followingVenueAdapter
+        followingVenueRecyclerView.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true)
 
         // Configure upcoming event RecyclerView
@@ -121,6 +133,13 @@ class MainActivity : AppCompatActivity() {
             .get().addOnSuccessListener { document ->
                 val followList = document.get("following") as List<*>
                 for (venueID in followList) {
+                    Log.d("FollowingVenues", "User follows venue $venueID")
+                    // Get details for following venue
+                    lifecycleScope.launch {
+                        ticketmaster.getVenueDetails(venueID as String, ::followingVenueCallback)
+                    }
+
+                    // Get list of upcoming events at following venues
                     lifecycleScope.launch {
                         ticketmaster.getEventsByVenueId(
                             venueID as String,
@@ -138,12 +157,22 @@ class MainActivity : AppCompatActivity() {
     private fun venueListCallback(newVenues: ArrayList<Venue>) {
         // Run on UI thread so we can touch the adapter
         runOnUiThread {
-            venueList.clear()
+            upcomingVenueList.clear()
             // Add new venues and update the adapter
-            venueList.addAll(newVenues.reversed())
-            nearbyVenueAdapter.notifyItemRangeChanged(0, venueList.size)
+            upcomingVenueList.addAll(newVenues.reversed())
+            nearbyVenueAdapter.notifyItemRangeChanged(0, upcomingVenueList.size)
             // Scroll to "end" (this is actually the start lol)
-            nearbyVenueRecyclerView.scrollToPosition(venueList.size - 1)
+            nearbyVenueRecyclerView.scrollToPosition(upcomingVenueList.size - 1)
+        }
+    }
+
+    private fun followingVenueCallback(venue: Venue) {
+        runOnUiThread {
+            followingVenueList.add(venue)
+            // Update the adapter
+            followingVenueAdapter.notifyItemInserted(followingVenueList.size - 1)
+            // Scroll fix
+            followingVenueRecyclerView.scrollToPosition(followingVenueList.size - 1)
         }
     }
 

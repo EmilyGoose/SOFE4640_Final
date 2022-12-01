@@ -87,7 +87,7 @@ class VenueDetailActivity : AppCompatActivity() {
         venueNameView = findViewById(R.id.label_venue_name)
         venueAddressView = findViewById(R.id.label_venue_address)
         venueImageView = findViewById(R.id.image_venue_detail)
-        eventRecyclerView = findViewById(R.id.recycler_upcoming)
+        eventRecyclerView = findViewById(R.id.recycler_nearby)
         followButton = findViewById(R.id.button_follow)
         appBar = findViewById(R.id.topAppBar)
         followersView = findViewById(R.id.label_followers)

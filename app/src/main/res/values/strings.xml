@@ -13,7 +13,7 @@
     <string name="prompt_switch_register">Switch to Register</string>
     <string name="description_venue_image">Venue Image</string>
     <string name="label_nearby">Nearby Venues</string>
-    <string name="label_popular">Popular Venues</string>
+    <string name="label_following">Following</string>
     <string name="label_upcoming">Upcoming in Following</string>
     <string name="label_distance">%.2f km</string>
     <string name="prompt_follow">Follow</string>

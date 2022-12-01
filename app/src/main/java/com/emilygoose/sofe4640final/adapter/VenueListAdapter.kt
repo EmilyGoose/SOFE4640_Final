@@ -13,7 +13,7 @@ import com.emilygoose.sofe4640final.VenueDetailActivity
 import com.emilygoose.sofe4640final.data.Venue
 import com.squareup.picasso.Picasso
 
-class VenueListAdapter(private val dataSet: ArrayList<Venue>) :
+class VenueListAdapter(private val dataSet: ArrayList<Venue>, private val showDistance: Boolean) :
     RecyclerView.Adapter<VenueListAdapter.ViewHolder>() {
     class ViewHolder( // Declare and find all the views by ID
         val view: View
@@ -34,8 +34,14 @@ class VenueListAdapter(private val dataSet: ArrayList<Venue>) :
 
         // Set title and distance
         holder.venueTitle.text = venue.name
-        holder.venueDistance.text =
-            holder.view.context.getString(R.string.label_distance, venue.distance)
+
+        // Show distance if adapter was configured to
+        if (showDistance) {
+            holder.venueDistance.text =
+                holder.view.context.getString(R.string.label_distance, venue.distance)
+        } else {
+            holder.venueDistance.text = ""
+        }
 
         Log.d("BindImage", "Adding image to card")
         // Make sure images exist
