@@ -142,6 +142,8 @@ class MainActivity : AppCompatActivity() {
             // Add new venues and update the adapter
             venueList.addAll(newVenues.reversed())
             nearbyVenueAdapter.notifyItemRangeChanged(0, venueList.size)
+            // Scroll to "end" (this is actually the start lol)
+            nearbyVenueRecyclerView.scrollToPosition(venueList.size - 1)
         }
     }
 
@@ -154,6 +156,8 @@ class MainActivity : AppCompatActivity() {
             eventList.clear()
             eventList.addAll(sortedEvents.reversed())
             upcomingEventAdapter.notifyItemRangeChanged(0, eventList.size)
+            // Scroll to "end" (actually start)
+            upcomingEventRecyclerView.scrollToPosition(eventList.size - 1)
         }
     }
 }
