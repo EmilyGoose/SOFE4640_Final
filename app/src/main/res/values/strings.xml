@@ -19,6 +19,6 @@
     <string name="prompt_follow">Follow</string>
     <string name="prompt_unfollow">Unfollow</string>
     <string name="user_location">User location</string>
-    <string name="followers">X Followers</string>
+    <string name="count_followers">%2d Followers</string>
     <string name="description_event_image">eventImageDescPlaceholder</string>
 </resources>

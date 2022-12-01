@@ -48,6 +48,7 @@ class VenueDetailActivity : AppCompatActivity() {
     private lateinit var eventRecyclerView: RecyclerView
     private lateinit var followButton: Button
     private lateinit var appBar: MaterialToolbar
+    private lateinit var followersView: TextView
 
     // Adapter for event list RecyclerView
     private lateinit var eventAdapter: EventListAdapter
@@ -60,8 +61,12 @@ class VenueDetailActivity : AppCompatActivity() {
 
         // Kick user back to main activity if venueID is somehow null
         if (intentExtra == null) {
-            startActivity(Intent(this, MainActivity::class.java))
-            // Need return call here so non-nullability of intentExtra is inferred
+            startActivity(
+                Intent(
+                    this,
+                    MainActivity::class.java
+                )
+            ) // Need return call here so non-nullability of intentExtra is inferred
             return
         }
 
@@ -85,6 +90,7 @@ class VenueDetailActivity : AppCompatActivity() {
         eventRecyclerView = findViewById(R.id.recycler_upcoming)
         followButton = findViewById(R.id.button_follow)
         appBar = findViewById(R.id.topAppBar)
+        followersView = findViewById(R.id.label_followers)
 
         // Configure RecyclerView for events
         eventAdapter = EventListAdapter(eventList)
@@ -94,19 +100,16 @@ class VenueDetailActivity : AppCompatActivity() {
 
         Log.d("VenueDetail", "Getting detail for venue $venueID")
 
-        lifecycleScope.launch {
-            // Get venue details
+        lifecycleScope.launch { // Get venue details
             ticketmaster.getVenueDetails(venueID, ::populateVenueFields)
-        }
-        // These only work in separate calls
-        lifecycleScope.launch {
-            // Get list of upcoming events
+        } // These only work in separate calls
+        lifecycleScope.launch { // Get list of upcoming events
             ticketmaster.getEventsByVenueId(venueID, ::populateEventList)
         }
 
         // Check if user is following venue and display follow button accordingly
-        db.collection("users").document(auth.currentUser!!.uid)
-            .get().addOnSuccessListener { document ->
+        db.collection("users").document(auth.currentUser!!.uid).get()
+            .addOnSuccessListener { document ->
                 val followList = document.get("following") as List<*>
                 if (venueID in followList) {
                     userFollowing = true
@@ -117,22 +120,23 @@ class VenueDetailActivity : AppCompatActivity() {
                 }
             }
 
-        followButton.setOnClickListener {
-            // Check if user is following venue and update collection accordingly
+        // Click listener for follow button
+        followButton.setOnClickListener { // Check if user is following venue and update collection accordingly
             val document = db.collection("users").document(auth.currentUser!!.uid)
-            userFollowing = if (userFollowing) {
-                // Remove venue from user's following
-                document.update("following", FieldValue.arrayRemove(venueID))
-                // Update button
+            userFollowing = if (userFollowing) { // Remove venue from user's following
+                document.update("following", FieldValue.arrayRemove(venueID)) // Update button
                 followButton.setText(R.string.prompt_follow)
                 false
-            } else {
-                // Add venue to user's following
-                document.update("following", FieldValue.arrayUnion(venueID))
-                // Update button
+            } else { // Add venue to user's following
+                document.update("following", FieldValue.arrayUnion(venueID)) // Update button
                 followButton.setText(R.string.prompt_unfollow)
                 true
             }
+        }
+
+        // Get follower count from Firestore and update
+        db.collection("users").whereArrayContains("following", venueID).get().addOnSuccessListener {
+            documents -> followersView.text = getString(R.string.count_followers, documents.size())
         }
 
         appBar.setNavigationOnClickListener {
@@ -144,8 +148,7 @@ class VenueDetailActivity : AppCompatActivity() {
         Log.d("PopulateVenueDetail", venue.toString())
 
         // Run on UI thread so we can touch the views
-        runOnUiThread {
-            // Populate text fields
+        runOnUiThread { // Populate text fields
             venueNameView.text = venue.name
             venueAddressView.text = "${venue.address?.line1}"
 
@@ -156,8 +159,7 @@ class VenueDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun populateEventList(newEvents: ArrayList<Event>) {
-        // Run on UI thread so we can touch the adapter
+    private fun populateEventList(newEvents: ArrayList<Event>) { // Run on UI thread so we can touch the adapter
         runOnUiThread {
             eventList.clear()
             eventList.addAll(newEvents)

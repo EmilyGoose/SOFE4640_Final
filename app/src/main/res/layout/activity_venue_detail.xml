@@ -40,13 +40,13 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/followers"
+                android:id="@+id/label_followers"
                 style="@style/TextAppearance.Material3.BodyLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:drawablePadding="2dp"
-                android:text="@string/followers"
+                android:text="@string/count_followers"
                 app:drawableStartCompat="@drawable/ic_baseline_group_24"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/image_venue_detail" />
