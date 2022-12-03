@@ -135,12 +135,24 @@ class VenueDetailActivity : AppCompatActivity() {
         }
 
         // Get follower count from Firestore and update
-        db.collection("users").whereArrayContains("following", venueID).get().addOnSuccessListener {
-            documents -> followersView.text = getString(R.string.count_followers, documents.size())
-        }
+        db.collection("users").whereArrayContains("following", venueID).get()
+            .addOnSuccessListener { documents ->
+                followersView.text = getString(R.string.count_followers, documents.size())
+            }
 
         appBar.setNavigationOnClickListener {
-            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+        }
+
+        appBar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.logout -> {
+                    FirebaseAuth.getInstance().signOut()
+                    startActivity(Intent(this, LoginRegisterActivity::class.java))
+                    true
+                }
+                else -> false
+            }
         }
     }
 

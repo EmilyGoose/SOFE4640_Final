@@ -121,6 +121,10 @@ class LoginRegisterActivity : AppCompatActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        //Intentionally left empty to prevent users from going back after logging out
+    }
+
     private fun updateForm() {
         if (registerMode) {
             formTitle.setText(R.string.title_register)

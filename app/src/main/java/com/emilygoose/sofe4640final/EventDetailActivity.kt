@@ -41,7 +41,22 @@ class EventDetailActivity : AppCompatActivity() {
         appBar = findViewById(R.id.topAppBar)
 
         appBar.setNavigationOnClickListener {
-            startActivity(Intent(this, MainActivity::class.java))
+            val intent = Intent(
+                this,
+                MainActivity::class.java
+            ).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NO_HISTORY)
+            startActivity(intent)
+        }
+
+        appBar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.logout -> {
+                    FirebaseAuth.getInstance().signOut()
+                    startActivity(Intent(this, LoginRegisterActivity::class.java))
+                    true
+                }
+                else -> false
+            }
         }
     }
 }

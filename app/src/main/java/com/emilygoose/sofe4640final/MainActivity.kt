@@ -149,8 +149,15 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-        appBar.setNavigationOnClickListener {
-            Log.d("Nav click", "Doesn't do anything on this screen :)")
+        appBar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.logout -> {
+                    FirebaseAuth.getInstance().signOut()
+                    startActivity(Intent(this, LoginRegisterActivity::class.java))
+                    true
+                }
+                else -> false
+            }
         }
     }
 
