@@ -12,11 +12,19 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import okhttp3.*
 import org.json.JSONObject
+import java.io.File
 import java.io.IOException
 
 class Ticketmaster {
     // OkHttp client for calling request
-    private var client: OkHttpClient = OkHttpClient()
+    private var client: OkHttpClient = OkHttpClient.Builder()
+        // Add a cache to avoid calling API too often
+        .cache(Cache(
+            directory = File("http_cache"),
+            // 50MB max size
+            maxSize = 50L * 1024L * 1024L
+        ))
+        .build()
 
     // Base URL for Ticketmaster Discovery API
     private val baseUrl = "https://app.ticketmaster.com/discovery/v2/"
