@@ -22,4 +22,5 @@
     <string name="count_followers">%2d Followers</string>
     <string name="description_event_image">eventImageDescPlaceholder</string>
     <string name="logout">Logout</string>
+    <string name="buy_tickets">Buy tickets</string>
 </resources>
