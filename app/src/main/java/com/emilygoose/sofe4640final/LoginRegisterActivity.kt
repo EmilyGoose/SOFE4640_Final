@@ -62,61 +62,77 @@ class LoginRegisterActivity : AppCompatActivity() {
         }
 
         loginButton.setOnClickListener {
-            val email = emailField.text.toString()
-            val password = passwordField.text.toString()
-
             if (registerMode) {
-                // Create new user
-                auth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d("Auth", "createUserWithEmail:success")
-                            // Write user name to db
-                            val name = nameField.text.toString()
-                            val userData = hashMapOf(
-                                "name" to name,
-                                "following" to listOf<String>()
-                            )
-                            db.collection("users").document(auth.currentUser!!.uid)
-                                .set(userData)
-                                .addOnSuccessListener {
-                                    Log.d(
-                                        "New User",
-                                        "New user created in db"
-                                    )
-                                }
-                                .addOnFailureListener { e ->
-                                    Log.w("New User", "Error adding document", e)
-                                }
-                            // Send user to MainActivity after success
-                            startActivity(Intent(this, MainActivity::class.java))
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w("Auth", "createUserWithEmail:failure", task.exception)
-                            Toast.makeText(
-                                baseContext, "Authentication failed.",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                if (emailField.text.isNullOrBlank() || passwordField.text.isNullOrBlank() ||
+                    nameField.text.isNullOrBlank()) {
+                    Toast.makeText(
+                        this, "Please fill all fields.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    val email = emailField.text.toString()
+                    val password = passwordField.text.toString()
+                    val name = nameField.text.toString()
+                    // Create new user
+                    auth.createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                // Sign in success, update UI with the signed-in user's information
+                                Log.d("Auth", "createUserWithEmail:success")
+                                // Write user name to db
+                                val userData = hashMapOf(
+                                    "name" to name,
+                                    "following" to listOf<String>()
+                                )
+                                db.collection("users").document(auth.currentUser!!.uid)
+                                    .set(userData)
+                                    .addOnSuccessListener {
+                                        Log.d(
+                                            "New User",
+                                            "New user created in db"
+                                        )
+                                    }
+                                    .addOnFailureListener { e ->
+                                        Log.w("New User", "Error adding document", e)
+                                    }
+                                // Send user to MainActivity after success
+                                startActivity(Intent(this, MainActivity::class.java))
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Log.w("Auth", "createUserWithEmail:failure", task.exception)
+                                Toast.makeText(
+                                    baseContext, "Authentication failed.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         }
-                    }
+                }
             } else {
-                auth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(this) { task ->
-                        if (task.isSuccessful) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d("Auth", "signInWithEmail:success")
-                            // Send user to MainActivity after success
-                            startActivity(Intent(this, MainActivity::class.java))
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w("Auth", "signInWithEmail:failure", task.exception)
-                            Toast.makeText(
-                                baseContext, "Authentication failed.",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                if (emailField.text.isNullOrBlank() || passwordField.text.isNullOrBlank()) {
+                    Toast.makeText(
+                        baseContext, "Please fill all fields.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    val email = emailField.text.toString()
+                    val password = passwordField.text.toString()
+                    auth.signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(this) { task ->
+                            if (task.isSuccessful) {
+                                // Sign in success, update UI with the signed-in user's information
+                                Log.d("Auth", "signInWithEmail:success")
+                                // Send user to MainActivity after success
+                                startActivity(Intent(this, MainActivity::class.java))
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Log.w("Auth", "signInWithEmail:failure", task.exception)
+                                Toast.makeText(
+                                    baseContext, "Authentication failed.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         }
-                    }
+                }
             }
         }
     }
