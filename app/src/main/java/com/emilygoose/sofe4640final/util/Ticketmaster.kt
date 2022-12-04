@@ -24,6 +24,12 @@ class Ticketmaster {
             // 50MB max size
             maxSize = 50L * 1024L * 1024L
         ))
+        .dispatcher(
+            // Only allow 1 request to run concurrently
+            Dispatcher().apply {
+                maxRequestsPerHost = 1
+            })
+        .addInterceptor(RateLimitInterceptor())
         .build()
 
     // Base URL for Ticketmaster Discovery API
