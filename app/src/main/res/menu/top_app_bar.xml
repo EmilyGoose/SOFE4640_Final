@@ -2,9 +2,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/locationTag"
-        android:contentDescription="@string/user_location"
-        android:title="@string/placeholder"
+        android:id="@+id/logout"
+        android:contentDescription="@string/logout"
+        android:title="@string/logout"
         app:showAsAction="ifRoom" />
 
 </menu>
