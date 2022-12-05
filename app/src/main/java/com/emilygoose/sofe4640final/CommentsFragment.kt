@@ -53,7 +53,7 @@ class CommentsFragment : Fragment() {
         db.collection("comments").document("comments").get()
             .addOnSuccessListener { documentSnapshot ->
                 // Create document if no comments for ID yet
-                if (!documentSnapshot.contains("id")) {
+                if (!documentSnapshot.contains(id!!)) {
                     db.collection("comments").document("comments")
                         .update(id!!, ArrayList<Pair<*, *>>())
                 } else {
@@ -61,15 +61,17 @@ class CommentsFragment : Fragment() {
                     for (comment in comments) {
                         comment as HashMap<*, *>
 
-                        commentList.add(Pair(comment["first"] as String, comment["second"] as String))
+                        commentList.add(
+                            Pair(
+                                comment["first"] as String,
+                                comment["second"] as String
+                            )
+                        )
                         commentsAdapter.notifyItemInserted(commentList.size - 1)
                         commentRecyclerView.scrollToPosition(commentList.size - 1)
                     }
                 }
             }
-
-
-
     }
 
     override fun onCreateView(
@@ -77,7 +79,7 @@ class CommentsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        val view =  inflater.inflate(R.layout.fragment_comments, container, false)
+        val view = inflater.inflate(R.layout.fragment_comments, container, false)
         // Init view variables
         commentBox = view.findViewById(R.id.input_comment)
         commentButton = view.findViewById(R.id.button_comment)
