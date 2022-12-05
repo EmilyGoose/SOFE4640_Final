@@ -149,6 +149,8 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
+        appBar.navigationIcon=null
+
         appBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.logout -> {
