@@ -12,8 +12,8 @@
         tools:ignore="UselessParent">
 
         <TextView
-            style="@style/TextAppearance.Material3.BodyLarge"
             android:id="@+id/label_comment"
+            style="@style/TextAppearance.Material3.BodyLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:labelFor="@id/input_comment"
@@ -21,6 +21,7 @@
 
         <EditText
             android:id="@+id/input_comment"
+            style="@style/TextAppearance.Material3.BodyMedium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:importantForAutofill="no"
@@ -28,6 +29,7 @@
 
         <Button
             android:id="@+id/button_comment"
+            style="@style/Widget.Material3.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/prompt__post" />
@@ -39,6 +41,5 @@
             android:layout_marginTop="20dp" />
 
     </LinearLayout>
-
 
 </FrameLayout>
