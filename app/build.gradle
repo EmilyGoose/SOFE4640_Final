@@ -74,6 +74,11 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
 
+    // Java language implementation
+    implementation("androidx.fragment:fragment:1.5.4")
+    // Kotlin
+    implementation("androidx.fragment:fragment-ktx:1.5.4")
+
     // Test dependencies
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'

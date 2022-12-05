@@ -7,6 +7,9 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
+import androidx.fragment.app.add
+import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import com.emilygoose.sofe4640final.data.Event
 import com.emilygoose.sofe4640final.util.Ticketmaster
@@ -61,9 +64,17 @@ class EventDetailActivity : AppCompatActivity() {
         eventDateLabel = findViewById(R.id.label_event_date)
         appBar = findViewById(R.id.topAppBar)
 
+        val eventID = intent.getStringExtra("ID")!!
+
         // Get details for the event
         lifecycleScope.launch {
-            ticketmaster.getEventDetails(intent.getStringExtra("ID")!!, ::eventDetailCallback)
+            ticketmaster.getEventDetails(eventID, ::eventDetailCallback)
+        }
+
+        val bundle = bundleOf("ID" to eventID)
+        supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            add<CommentsFragment>(R.id.fragment_comments, args = bundle)
         }
 
         appBar.setNavigationOnClickListener {

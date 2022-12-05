@@ -23,4 +23,7 @@
     <string name="description_event_image">eventImageDescPlaceholder</string>
     <string name="logout">Logout</string>
     <string name="buy_tickets">Buy tickets</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="prompt_comment">Leave a comment:</string>
+    <string name="prompt__post">Post</string>
 </resources>
