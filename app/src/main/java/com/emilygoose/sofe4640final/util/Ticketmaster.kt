@@ -223,7 +223,7 @@ class Ticketmaster {
             // Build and call request
             val request = Request.Builder().url(urlBuilder.toString()).build()
 
-            Log.d("EventDetails", "Performing HTTP request")
+            Log.d("EventDetails", "Performing HTTP request for event ID $eventID")
             client.newCall(request).enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
                     Log.e("EventDetails", "Request failed. Reason " + e.message)
@@ -238,12 +238,9 @@ class Ticketmaster {
                             return
                         }
 
-                        // Get list of events and bind to data classes
-                        val events = responseJSON.getJSONObject("_embedded").getJSONArray("events")
-
                         // Deserialize and return event
                         val event =
-                            json.decodeFromString(Event.serializer(), events[0].toString())
+                            json.decodeFromString(Event.serializer(), responseJSON.toString())
                         callback(event)
                     }
                 }

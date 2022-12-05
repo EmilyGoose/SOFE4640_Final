@@ -3,7 +3,9 @@ package com.emilygoose.sofe4640final
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
 import com.emilygoose.sofe4640final.data.Event
 import com.emilygoose.sofe4640final.util.Ticketmaster
@@ -13,6 +15,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
 
 class EventDetailActivity : AppCompatActivity() {
@@ -24,6 +27,13 @@ class EventDetailActivity : AppCompatActivity() {
     // Ticketmaster API helper
     private val ticketmaster = Ticketmaster()
 
+    // Views
+    private lateinit var typeLabel: TextView
+    private lateinit var buyButton: Button
+    private lateinit var eventImage: ImageView
+    private lateinit var eventNameLabel: TextView
+    private lateinit var eventAddressLabel: TextView
+    private lateinit var eventDateLabel: TextView
     private lateinit var appBar: MaterialToolbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,11 +52,17 @@ class EventDetailActivity : AppCompatActivity() {
         }
 
         // InitializeViews
+        typeLabel = findViewById(R.id.type)
+        buyButton = findViewById(R.id.button_buy)
+        eventImage = findViewById(R.id.image_event_detail)
+        eventNameLabel = findViewById(R.id.label_event_name)
+        eventAddressLabel = findViewById(R.id.label_event_address)
+        eventDateLabel = findViewById(R.id.label_event_date)
         appBar = findViewById(R.id.topAppBar)
 
         // Get details for the event
         lifecycleScope.launch {
-            ticketmaster.getEventDetails("", ::eventDetailCallback)
+            ticketmaster.getEventDetails(intent.getStringExtra("ID")!!, ::eventDetailCallback)
         }
 
         appBar.setNavigationOnClickListener {
@@ -70,6 +86,19 @@ class EventDetailActivity : AppCompatActivity() {
     }
 
     private fun eventDetailCallback(event: Event) {
-        Log.d("EventDetailCallback", event.toString())
+        // Run on UI thread so we can touch views
+        runOnUiThread {
+            // Set text view values
+            typeLabel.text = event.classifications[0].segment.name
+            eventNameLabel.text = event.name
+            eventAddressLabel.text = event._embedded!!.venues[0].name
+            eventDateLabel.text = event.dates.start.localDate
+
+            // Make sure images exist
+            if (event.images.isNotEmpty()) {
+                // Load first event image into ImageView with Picasso
+                Picasso.get().load(event.images[0].url).into(eventImage)
+            }
+        }
     }
 }

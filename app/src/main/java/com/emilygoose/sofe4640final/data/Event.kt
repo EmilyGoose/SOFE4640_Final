@@ -9,9 +9,9 @@ data class Event(
     val name: String,
     val url: String,
     val dates: Dates,
-    val place: Place? = null,
-    val description: String = "",
-    val images: List<Image> = ArrayList()
+    val images: List<Image> = ArrayList(),
+    val _embedded: Embedded? = null,
+    val classifications: List<Classification>
 ) {
     // Ugly nested serializable because of the weird format from the API
     @Serializable
@@ -26,7 +26,18 @@ data class Event(
     }
 
     @Serializable
-    data class Place(
-        val name: String = ""
+    data class Embedded(
+        val venues: List<Venue>
     )
+
+    @Serializable
+    data class Classification (
+        val segment: ClassificationProperty
+    ) {
+        @Serializable
+        data class ClassificationProperty (
+            val name: String
+            )
+    }
 }
+
