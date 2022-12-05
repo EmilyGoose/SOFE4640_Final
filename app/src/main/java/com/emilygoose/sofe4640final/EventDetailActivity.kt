@@ -1,11 +1,12 @@
 package com.emilygoose.sofe4640final
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.emilygoose.sofe4640final.data.Event
 import com.emilygoose.sofe4640final.util.Ticketmaster
@@ -98,6 +99,13 @@ class EventDetailActivity : AppCompatActivity() {
             if (event.images.isNotEmpty()) {
                 // Load first event image into ImageView with Picasso
                 Picasso.get().load(event.images[0].url).into(eventImage)
+            }
+
+            // Set buy button to go to Ticketmaster
+            buyButton.setOnClickListener {
+                // Open URL in browser
+                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(event.url))
+                startActivity(browserIntent)
             }
         }
     }
