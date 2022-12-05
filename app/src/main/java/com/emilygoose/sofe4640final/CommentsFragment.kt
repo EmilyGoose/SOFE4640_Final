@@ -52,12 +52,19 @@ class CommentsFragment : Fragment() {
 
         db.collection("comments").document("comments").get()
             .addOnSuccessListener { documentSnapshot ->
-                val comments = documentSnapshot.get(id!!) as List<*>
-                for (comment in comments) {
-                    comment as HashMap<*, *>
+                // Create document if no comments for ID yet
+                if (!documentSnapshot.contains("id")) {
+                    db.collection("comments").document("comments")
+                        .update(id!!, ArrayList<Pair<*, *>>())
+                } else {
+                    val comments = documentSnapshot.get(id!!) as List<*>
+                    for (comment in comments) {
+                        comment as HashMap<*, *>
 
-                    commentList.add(Pair(comment["first"] as String, comment["second"] as String))
-                    commentsAdapter.notifyItemInserted(commentList.size - 1)
+                        commentList.add(Pair(comment["first"] as String, comment["second"] as String))
+                        commentsAdapter.notifyItemInserted(commentList.size - 1)
+                        commentRecyclerView.scrollToPosition(commentList.size - 1)
+                    }
                 }
             }
 
@@ -90,7 +97,7 @@ class CommentsFragment : Fragment() {
         commentsAdapter = CommentsAdapter(commentList)
         commentRecyclerView.adapter = commentsAdapter
         commentRecyclerView.layoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, true)
 
         return view
 
