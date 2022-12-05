@@ -83,16 +83,6 @@ class CommentsFragment : Fragment() {
         // Init view variables
         commentBox = view.findViewById(R.id.input_comment)
         commentButton = view.findViewById(R.id.button_comment)
-        commentButton.setOnClickListener {
-            val commentText = commentBox.text.toString()
-            commentBox.text.clear()
-
-
-            // Post document to database
-            val document = db.collection("comments").document("comments")
-            document.update(id!!, FieldValue.arrayUnion(Pair(userName, commentText)))
-
-        }
 
         // Configure recycler view
         commentRecyclerView = view.findViewById(R.id.recycler_comments)
@@ -100,6 +90,21 @@ class CommentsFragment : Fragment() {
         commentRecyclerView.adapter = commentsAdapter
         commentRecyclerView.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, true)
+
+        commentButton.setOnClickListener {
+            val commentText = commentBox.text.toString()
+            commentBox.text.clear()
+
+            // Post document to database
+            val document = db.collection("comments").document("comments")
+            document.update(id!!, FieldValue.arrayUnion(Pair(userName, commentText)))
+
+            // Display comment locally
+            commentList.add(Pair(userName, commentText))
+            commentsAdapter.notifyItemInserted(commentList.size - 1)
+
+        }
+
 
         return view
 
