@@ -78,11 +78,7 @@ class EventDetailActivity : AppCompatActivity() {
         }
 
         appBar.setNavigationOnClickListener {
-            val intent = Intent(
-                this,
-                MainActivity::class.java
-            ).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NO_HISTORY)
-            startActivity(intent)
+            finish()
         }
 
         appBar.setOnMenuItemClickListener { menuItem ->
