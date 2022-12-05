@@ -1,5 +1,6 @@
 package com.emilygoose.sofe4640final.adapter
 
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.emilygoose.sofe4640final.EventDetailActivity
 import com.emilygoose.sofe4640final.R
 import com.emilygoose.sofe4640final.data.Event
 import com.squareup.picasso.Picasso
@@ -15,7 +17,7 @@ import com.squareup.picasso.Picasso
 class UpcomingEventAdapter(private val dataSet: ArrayList<Event>) :
     RecyclerView.Adapter<UpcomingEventAdapter.ViewHolder>() {
     class ViewHolder( // Declare and find all the views by ID
-        view: View
+        val view: View
     ) : RecyclerView.ViewHolder(view) {
         val venueImageView: ImageView = view.findViewById(R.id.image_venue)
         val venueTitle: TextView = view.findViewById(R.id.label_venue_name)
@@ -43,7 +45,14 @@ class UpcomingEventAdapter(private val dataSet: ArrayList<Event>) :
                 .into(holder.venueImageView)
         }
 
-        // Todo click listener to open event detail view
+        holder.view.setOnClickListener {
+            val context = holder.view.context
+            // Launch event detail activity with the event ID
+            val intent = Intent(context, EventDetailActivity::class.java)
+            intent.putExtra("ID", event.id)
+            context.startActivity(intent)
+        }
+
     }
 
     override fun getItemCount() = dataSet.size

@@ -3,6 +3,9 @@ package com.emilygoose.sofe4640final
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import androidx.lifecycle.lifecycleScope
+import com.emilygoose.sofe4640final.data.Event
 import com.emilygoose.sofe4640final.util.Ticketmaster
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.firebase.auth.FirebaseAuth
@@ -10,6 +13,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.launch
 
 class EventDetailActivity : AppCompatActivity() {
 
@@ -40,6 +44,11 @@ class EventDetailActivity : AppCompatActivity() {
         // InitializeViews
         appBar = findViewById(R.id.topAppBar)
 
+        // Get details for the event
+        lifecycleScope.launch {
+            ticketmaster.getEventDetails("", ::eventDetailCallback)
+        }
+
         appBar.setNavigationOnClickListener {
             val intent = Intent(
                 this,
@@ -58,5 +67,9 @@ class EventDetailActivity : AppCompatActivity() {
                 else -> false
             }
         }
+    }
+
+    private fun eventDetailCallback(event: Event) {
+        Log.d("EventDetailCallback", event.toString())
     }
 }

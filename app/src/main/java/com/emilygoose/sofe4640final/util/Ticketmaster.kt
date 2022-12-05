@@ -170,7 +170,7 @@ class Ticketmaster {
             Log.d("EventSearch", "Performing HTTP request")
             client.newCall(request).enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
-                    Log.e("VenueSearch", "Request failed. Reason " + e.message)
+                    Log.e("EventSearch", "Request failed. Reason " + e.message)
                 }
 
                 override fun onResponse(call: Call, response: Response) {
@@ -202,6 +202,52 @@ class Ticketmaster {
                         callback(eventList)
                     }
                 }
+            })
+        }
+    }
+
+    suspend fun getEventDetails(
+        eventID: String,
+        callback: (Event) -> Unit
+    ) {
+        // Run on IO thread
+        withContext(Dispatchers.IO) {
+            val urlBuilder = StringBuilder(baseUrl)
+            // Specify API endpoint
+            urlBuilder.append("events")
+            // Add venue ID to request
+            urlBuilder.append("/$eventID")
+            // Add API key to authenticate
+            urlBuilder.append("?apikey=$apiKey")
+
+            // Build and call request
+            val request = Request.Builder().url(urlBuilder.toString()).build()
+
+            Log.d("EventDetails", "Performing HTTP request")
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    Log.e("EventDetails", "Request failed. Reason " + e.message)
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    response.body?.let { body ->
+                        val responseJSON = JSONObject(body.string())
+                        // Return if error occurs
+                        if (responseJSON.has("errors")) {
+                            Log.e("EventDetails", responseJSON.get("errors").toString())
+                            return
+                        }
+
+                        // Get list of events and bind to data classes
+                        val events = responseJSON.getJSONObject("_embedded").getJSONArray("events")
+
+                        // Deserialize and return event
+                        val event =
+                            json.decodeFromString(Event.serializer(), events[0].toString())
+                        callback(event)
+                    }
+                }
+
             })
         }
     }
